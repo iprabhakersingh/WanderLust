@@ -15,9 +15,9 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStratergy = require("passport-local");
 const User = require("C:/MajorProject/models/user.js");
-const listingRouter = require("C:/MajorProject/routes/listing.js");
-const reviewRouter = require("C:/MajorProject/routes/review.js");
-const userRouter = require("C:/MajorProject/routes/user.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 const dbURL = process.env.ATLASDB_URL;
 
