@@ -30,19 +30,53 @@ module.exports.showListing = async(req,res) => {
     res.render("listings/show.ejs",{listing});
 };
 
-module.exports.createListing = async(req,res,next) => {
+module.exports.createListing = async (req, res, next) => {
     let response = await geocodingClient
-    .forwardGeocode({
-    query: req.body.listing.location,
-    limit: 1
-    })
-    .send()
+        .forwardGeocode({
+            query: req.body.listing.location,
+            limit: 1
+        })
+        .send()
     let locationGeometry = response.body.features[0].geometry;
     let url = req.file.path;
     let filename = req.file.filename;
+
+    // 1️⃣ Check for duplicate image
+    const duplicateImage = await Listing.findOne({
+        "image.hash": filename
+    });
+
     let newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
-    newListing.image = {url, filename};
+
+    // 2️⃣ Save image with hash
+    newListing.image = {
+        url,
+        filename,
+        hash: filename
+    };
+
+    // 3️⃣ Flag suspicious if duplicate found
+    if (duplicateImage) {
+        newListing.isSuspicious = true;
+        newListing.suspiciousReasons.push("Duplicate image detected");
+    }
+    // 4️⃣ Price anomaly detection
+    const avgPrice = await Listing.aggregate([
+        { $match: { location: newListing.location } },
+        { $group: { _id: null, avg: { $avg: "$price" } } }
+    ]);
+
+    if (avgPrice.length > 0) {
+        const areaAvg = avgPrice[0].avg;
+        if (newListing.price < areaAvg * 0.5) {
+            newListing.isSuspicious = true;
+            newListing.suspiciousReasons.push(
+                "Price significantly lower than area average"
+            );
+        }
+    }
+
     newListing.geometry = locationGeometry;
     await newListing.save();
     console.log(newListing);
