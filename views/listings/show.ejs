@@ -7,6 +7,22 @@
     <div class="col-8 offset-3">
         <h3><%=listing.title%></h3>
     </div>
+<!-- ⚠️ SUSPICIOUS LISTING WARNING -->
+    <% if (listing.isSuspicious) { %>
+        <div class="col-6 offset-3">
+            <div class="alert alert-warning mt-2">
+                <strong>⚠️ Suspicious Listing</strong>
+                <p class="mb-1">
+                    This listing has been flagged for the following reasons:
+                </p>
+                <ul class="mb-0">
+                    <% listing.suspiciousReasons.forEach(reason => { %>
+                        <li><%= reason %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    <% } %>
     <div class="card col-6 offset-3 show-card listing-card">
         <img src="<%=listing.image.url%>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
