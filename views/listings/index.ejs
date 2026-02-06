@@ -66,6 +66,15 @@
 <%for (let listing of allListings) {%>
     <a href="/listings/<%=listing._id%>" class="listing-link">
     <div class="card col listing-card">
+<!-- ⚠️ SUSPICIOUS BADGE -->
+            <% if (listing.isSuspicious) { %>
+                <span 
+                  class="badge bg-warning text-dark position-absolute"
+                  style="top: 10px; left: 10px; z-index: 10;"
+                >
+                  ⚠️ Suspicious
+                </span>
+            <% } %>
   <img
    src="<%= listing.image.url%>" 
    class="card-img-top" 
