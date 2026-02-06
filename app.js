@@ -30,7 +30,7 @@ main().then(()=> {
 async function main() {
     await mongoose.connect(dbURL);
 };
-
+app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname,"/public")));
