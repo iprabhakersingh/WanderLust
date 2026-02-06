@@ -20,6 +20,7 @@ WanderLust is designed as a complete rental/listing platform where:
 - Cloudinary handles image uploading.
 - MongoDB stores listing, user, and category data.
 - EJS provides dynamic server-side rendering for clean UI templates.
+- Built an AI feature that auto-generates and improves property descriptions from listing details using OpenAI, reducing manual effort for hosts.
 
 The project follows an organized MVC architecture with reusable components and clean routes.
 
