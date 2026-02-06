@@ -2,6 +2,10 @@ const Listing = require("../models/listing.js");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+const OpenAI = require("openai");
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 module.exports.index = async (req,res) => {
     const allListings = await Listing.find({});
@@ -145,4 +149,47 @@ module.exports.searchIndex = async (req, res) => {
     let {q} = req.query;
     let allListings = await Listing.find({$or: [{country: q}, {location: q}]});
     res.render("listings/index.ejs", {allListings});
+};
+
+module.exports.aiImproveDescription = async (req, res) => {
+  try {
+    const { description, title, location, country, category, price } = req.body;
+
+    if (!title || !location || !country) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const userContent = description && description.trim().length > 0
+      ? `Improve this property description:\n"${description}"`
+      : `Write a professional property description from scratch.`;
+
+    const response = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an expert travel listing copywriter. Write clear, honest, ATS-friendly property descriptions. Do not invent amenities. Limit to 80–120 words."
+        },
+        {
+          role: "user",
+          content: `
+Title: ${title}
+Category: ${category}
+Location: ${location}, ${country}
+Price: ${price}
+
+${userContent}
+          `
+        }
+      ]
+    });
+
+    const improvedDescription = response.choices[0].message.content;
+    return res.status(200).json({ improvedDescription });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
 };
