@@ -6,7 +6,7 @@ It is built using **Node.js**, **Express**, **MongoDB**, and **EJS** with full C
 ---
 
 ## 🚀 Live Deployment
-- 🌐 **Website:** https://wanderlust-285c.onrender.com/listings
+- 🌐 **Website:** https://wanderlust-z5k6.onrender.com/listings
 - 📦 **GitHub Repo:** https://github.com/iprabhakersingh/WanderLust
 
 ---
