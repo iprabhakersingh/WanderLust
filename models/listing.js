@@ -11,6 +11,7 @@ const listingSchema = new Schema({
     image: {
         url: String,
         filename: String,
+        hash: String,
     },
     price: Number,
     location: String,
@@ -42,7 +43,15 @@ const listingSchema = new Schema({
             "Castles", "Amazing Pools", "Camping", "Farms", 
             "Arctic", "Domes", "Boats"],
         required: true
-    }
+    },
+    isSuspicious: {
+        type: Boolean,
+        default: false,
+    },
+    suspiciousReasons: {
+        type: [String],
+        default: [],
+    },
 });
 
 listingSchema.post("findOneAndDelete", async(listing)=> {
