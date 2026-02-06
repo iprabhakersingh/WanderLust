@@ -18,8 +18,11 @@
         <div class="valid-feedback">Title looks good</div>
         </div>
         <div class="mb-3">
-        <lable for="description" class="form-label">Description</lable>
-        <textarea name="listing[description]" class="form-control" required><%=listing.description%></textarea>
+        <label for="description" class="form-label">Description</label>
+        <textarea name="listing[description]" class="form-control" rows="5"><%= listing.description %></textarea>
+        <button type="button" id="aiImproveBtn" class="btn btn-outline-dark btn-sm mt-2">
+             ✨ Improve with AI
+        </button>
         <div class="invalid-feedback">Please enter a short description</div>
         </div>
         <div class="mb-3">
