@@ -39,6 +39,7 @@ The project follows an organized MVC architecture with reusable components and c
 - Edit existing listings
 - Delete listings
 - Automatic data validation using Joi
+- Built an AI feature that auto-generates and improves property descriptions
 
 ### 🔧 Backend Features
 - MVC design structure (models, controllers, routes)
@@ -66,7 +67,8 @@ The project follows an organized MVC architecture with reusable components and c
 - Cloudinary for image upload  
 - Multer for file handling  
 - Joi for schema validation  
-- Express-session for authentication  
+- Express-session for authentication
+- OpenAI for listing description improver
 
 ---
 
@@ -158,7 +160,8 @@ npm run dev      # For nodemon (if configured)
 - Create, read, update, delete listings  
 - Display all listings with responsive UI  
 - Category icons for quick navigation  
-- Price, tax, and location details  
+- Price, tax, and location details
+- AI-powered listing description improver that generates or enhances property descriptions using OpenAI, helping hosts create clear, engaging, and professional listings.
 
 ### 🖼 Image Uploads
 - Managed using Cloudinary  
