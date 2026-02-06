@@ -42,5 +42,11 @@ router.get(
     isLoggedIn,
     isOwner,
     wrapAsync(listingController.renderEditForm));
+
+router.post(
+    "/ai/improve-description",
+    isLoggedIn,
+    listingController.aiImproveDescription
+);
  
 module.exports = router;
