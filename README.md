@@ -1,6 +1,6 @@
-# 🌍 WanderLust — Travel Stay & Accommodation Platform
+# 🌍 WanderLust — AI Powered Travel Listing & Search Platform
 
-WanderLust is a full-stack web application inspired by Airbnb, where users can explore travel stays, create property listings, upload images, view categories, and manage their rental spaces.  
+WanderLust is a full-stack travel listing platform, allowing users to explore stays, create and manage property listings, upload images, and browse by curated categories. The platform includes OpenAI-powered features such as an AI listing description improver, intelligent price prediction based on description, category, location, and country, and a semantic AI search engine that converts natural-language queries into structured database filters for accurate and user-friendly search results.
 It is built using **Node.js**, **Express**, **MongoDB**, and **EJS** with full CRUD features and Cloudinary image hosting.
 
 ---
@@ -21,6 +21,8 @@ WanderLust is designed as a complete rental/listing platform where:
 - MongoDB stores listing, user, and category data.
 - EJS provides dynamic server-side rendering for clean UI templates.
 - Built an AI feature that auto-generates and improves property descriptions from listing details using OpenAI, reducing manual effort for hosts.
+- Added AI-driven price prediction that suggests optimal pricing based on description, category, location, and country.
+- Implemented a semantic AI search system that allows users to search listings using natural-language queries (e.g., “cheap stays in Goa under 2000”), converting user intent into structured database filters.
 
 The project follows an organized MVC architecture with reusable components and clean routes.
 
@@ -32,6 +34,7 @@ The project follows an organized MVC architecture with reusable components and c
 - User registration & login (Session-based authentication)
 - Explore all listings with category navigation
 - View detailed property pages: images, description, price, taxes
+- AI-powered semantic search allowing users to search listings using natural-language queries (e.g., “cheap stays in Goa under 2000”)
 - Mobile-friendly views (via responsive CSS)
 
 ### 🏡 Host / Admin Features
@@ -40,6 +43,8 @@ The project follows an organized MVC architecture with reusable components and c
 - Edit existing listings
 - Delete listings
 - Automatic data validation using Joi
+- AI-powered listing description improver that generates and enhances property descriptions using OpenAI
+- AI-based price prediction suggesting optimal pricing based on description, category, location, and country
 - Built an AI feature that auto-generates and improves property descriptions
 
 ### 🔧 Backend Features
@@ -47,6 +52,10 @@ The project follows an organized MVC architecture with reusable components and c
 - Clean RESTful routes using Express Router
 - Centralized authentication middleware
 - Schema validation through Joi
+- Semantic AI search engine that converts natural-language queries into structured MongoDB filters with fallback logic
+- Reusable EJS partials (navbar, cards, footers) for consistent UI
+- Secure environment variable management for sensitive credentials (API keys, secrets)
+- Deployed with production-ready configuration and error handling
 - Reusable partials (navbar, cards, footers) in EJS
 
 ---
@@ -69,7 +78,7 @@ The project follows an organized MVC architecture with reusable components and c
 - Multer for file handling  
 - Joi for schema validation  
 - Express-session for authentication
-- OpenAI for listing description improver
+- OpenAI for listing description improver, price prediction and searching
 
 ---
 
@@ -126,6 +135,11 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_key
 CLOUDINARY_API_SECRET=your_secret
 
+#OpenAI Keys
+OPENAI_KEY=your_key_name
+OPENAI_MODEL=your_model
+OPENAI_BASE_URL=your_base_url
+
 # Map Keys
 MAP_TOKEN = your_token
 
@@ -163,6 +177,7 @@ npm run dev      # For nodemon (if configured)
 - Category icons for quick navigation  
 - Price, tax, and location details
 - AI-powered listing description improver that generates or enhances property descriptions using OpenAI, helping hosts create clear, engaging, and professional listings.
+- AI-based price prediction that suggests optimal pricing based on description, category, location, and country
 
 ### 🖼 Image Uploads
 - Managed using Cloudinary  
@@ -183,7 +198,8 @@ The project maintains:
 - Separate controllers for logic  
 - Reusable EJS components  
 - Fully modularized Express routes  
-- Proper schema validations  
+- Proper schema validations
+- AI-powered semantic search that converts natural-language queries into structured MongoDB filters with fallback handling
 
 This improves maintainability and scalability.
 
