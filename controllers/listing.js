@@ -45,7 +45,6 @@ module.exports.createListing = async (req, res, next) => {
     let url = req.file.path;
     let filename = req.file.filename;
 
-    // 1️⃣ Check for duplicate image
     const duplicateImage = await Listing.findOne({
         "image.hash": filename
     });
@@ -53,19 +52,19 @@ module.exports.createListing = async (req, res, next) => {
     let newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
 
-    // 2️⃣ Save image with hash
+    
     newListing.image = {
         url,
         filename,
         hash: filename
     };
 
-    // 3️⃣ Flag suspicious if duplicate found
+    
     if (duplicateImage) {
         newListing.isSuspicious = true;
         newListing.suspiciousReasons.push("Duplicate image detected");
     }
-    // 4️⃣ Price anomaly detection
+    
     const avgPrice = await Listing.aggregate([
         { $match: { location: newListing.location } },
         { $group: { _id: null, avg: { $avg: "$price" } } }
@@ -191,5 +190,104 @@ ${userContent}
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
+  }
+};
+module.exports.aiSuggestPrice = async (req, res) => {
+  try {
+    const { title, location, country, category, description } = req.body;
+
+    if (!location || !country) {
+      return res.status(400).json({ message: "Location and country required" });
+    }
+
+    const response = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a pricing expert for vacation rentals in India. Suggest a fair nightly price in INR. Be realistic and competitive. Return ONLY a number."
+        },
+        {
+          role: "user",
+          content: `
+Title: ${title}
+Category: ${category}
+Location: ${location}, ${country}
+Description: ${description || "N/A"}
+
+Suggest the best nightly price in INR.
+          `
+        }
+      ]
+    });
+
+    const aiPrice = response.choices[0].message.content.trim();
+
+    return res.status(200).json({ aiPrice });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.aiSearch = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    const response = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "Convert a travel search query into MongoDB filters using ONLY these fields: location, country, category, price. Use category values like Mountains, Rooms, Farms, Boats. Return ONLY valid JSON."
+        },
+        {
+          role: "user",
+          content: q
+        }
+      ]
+    });
+
+    let filters = {};
+    try {
+      filters = JSON.parse(response.choices[0].message.content);
+    } catch {
+      filters = {};
+    }
+
+    let allListings;
+
+    if (Object.keys(filters).length === 0) {
+      allListings = await Listing.find({
+        $or: [
+          { country: new RegExp(q, "i") },
+          { location: new RegExp(q, "i") }
+        ]
+      });
+    } else {
+      allListings = await Listing.find(filters);
+
+      if (allListings.length === 0) {
+        allListings = await Listing.find({
+          $or: [
+            { country: new RegExp(q, "i") },
+            { location: new RegExp(q, "i") },
+            { category: new RegExp(q, "i") }
+          ]
+        });
+      }
+    }
+
+    console.log("AI filters:", filters);
+    console.log("Results count:", allListings.length);
+
+    res.render("listings/index.ejs", { allListings });
+
+  } catch (err) {
+    console.error("AI Search Error:", err);
+    res.redirect("/listings");
   }
 };
