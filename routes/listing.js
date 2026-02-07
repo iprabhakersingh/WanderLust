@@ -17,6 +17,8 @@ router.route("/")
     wrapAsync(listingController.createListing)
 );
 
+router.get("/ai-search", wrapAsync(listingController.aiSearch));
+
 //New route 
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
@@ -47,6 +49,12 @@ router.post(
     "/ai/improve-description",
     isLoggedIn,
     listingController.aiImproveDescription
+);
+
+router.post(
+  "/ai/suggest-price",
+  isLoggedIn,
+  listingController.aiSuggestPrice
 );
  
 module.exports = router;
